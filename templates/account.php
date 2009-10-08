@@ -4,7 +4,7 @@
 		<div id="main_content">
 			<div class="padding">
 				<h1>My Account</h1>
-				<? $helper->display_message($message,'message'); ?>
+				<p><a href="<?= $web_root ?>?edit_account">Edit Account</a></p>
 				<pre><?php print_r($me); ?></pre>
 			</div>
 		</div>

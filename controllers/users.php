@@ -6,7 +6,7 @@
 		}
 		
 		function create($data) {
-			$fields = array('first_name','last_name','address','address2','city','state','zip','country','email','username','password','created_on');
+			$fields = array('first_name','last_name','address','address2','city','state','zip','country','email','username','password','created_on','time_zone');
 			$data['created_on'] = date('Y-m-d H:i:s');
 			foreach($fields as $k) {
 				if($k == 'password') { $data[$k] = md5($data[$k]); } // encrypt password
@@ -15,6 +15,18 @@
 			$uid = sql::insert('users',$fields,$values);
 			
 			return $uid;
+		}
+		
+		function update($id,$data) {
+			$fields = array('first_name','last_name','address','address2','city','state','zip','country','email','password','updated_at','time_zone');
+			$data['updated_at'] = date('Y-m-d H:i:s');
+			$pass = false;
+			foreach($fields as $k) {
+				if($k == 'password' && $data[$k] != "") { $data[$k] = md5($data[$k]); $pass = true; } // encrypt password, only update if not blank
+				if($k != 'password' || $pass)
+					$values[$k] = mysql_real_escape_string($data[$k]);
+			}
+			sql::update("users",$values," where id = ".mysql_real_escape_string($id));
 		}
 	
 		function login($data) {

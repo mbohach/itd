@@ -1,14 +1,46 @@
 <?php
 	class Error {
 		function account($data) {
-			$required_fields = array('first_name','last_name','address','city','state','zip','country','email','time_zone','username','password');
+			$required_fields = array('first_name','last_name','address','city','state','zip','country','email','time_zone','username','password','confirm_password');
 			foreach($data as $k=>$v) {
 				if($data[$k] == "" && in_array($k,$required_fields)) {
 					$errors[] = str_replace('_',' ',$k) . " is required";
 				}
 			}
+			if($data['password'] != "" || $data['confirm_password'] != "") {
+				if(strlen($data['password']) < 6) {
+					$errors['password'] = "Your password must be at least 6 characters";
+				}
+				if($data['password'] != $data['confirm_password']) {
+					$errors['password'] = "Passwords do not match";
+				}
+			}
 			if($this->check_email($data['email'])) { $errors[] = "email address is already registered"; }
 			if($this->check_username($data['username'])) { $errors[] = "username address is already registered"; }
+			return $errors;
+		}
+		
+		function user_update($data,$old_email) {
+			$required = array('first_name','last_name','address','city','state','zip','country','email','time_zone');
+			foreach($required as $k) {
+				if($data[$k] == "") {
+					$errors[$k] = $k. " is required";
+				}
+			}
+			
+			if($data['password'] != "" || $data['confirm_password'] != "") {
+				if(strlen($data['password']) < 6) {
+					$errors['password'] = "Your password must be at least 6 characters";
+				}
+				if($data['password'] != $data['confirm_password']) {
+					$errors['password'] = "Passwords do not match";
+				}
+			}
+			if($data['email'] != $old_email) {
+				if($this->check_email($data['email'])) {
+					$errors['email'] = "This email address is already registered with another account.";
+				}
+			}
 			return $errors;
 		}
 		

@@ -1,9 +1,13 @@
 <?php
 	session_start('itd');
-	//date_default_timezone_set('Israel');
 	include('common.php');
 	if(isset($_COOKIE['itd_id'])) {
 		$me = $user->my_info($_COOKIE['itd_user'],$_COOKIE['itd_id']);
+		date_default_timezone_set($me->time_zone);
+	} else {
+		if(isset($_SESSION['time_zone'])) {
+			date_default_timezone_set($_SESSION['time_zone']);
+		}
 	}		
 	if(isset($_GET['search'])) {
 		if(strtolower($_POST['adbc']) == "bc") { $neg = '-'; }
@@ -63,6 +67,24 @@
 		}
 	} elseif(isset($_GET['account'])) {
 		include($include_root.'templates/account.php');
+	} elseif(isset($_GET['edit_account'])) {
+		if($_POST['submit']) {
+			$errors = $error->user_update($_POST['data'],$me->email);
+			if(count($errors) > 0) {
+				$message = implode('<br />',$errors);	
+				include($include_root.'templates/edit_account.php');
+			} else {
+				$user->update($me->id,$_POST['data']);
+				$me = $user->my_info($_COOKIE['itd_user'],$_COOKIE['itd_id']);
+				date_default_timezone_set($me->time_zone);
+				$message = "Your account has been updated";
+				include($include_root.'templates/edit_account.php');
+			}
+		} else {
+			foreach($me as $k => $v) { $_POST['data'][$k] = stripslashes($v); }
+			$_POST['data']['password'] = '';
+			include($include_root.'templates/edit_account.php');
+		}
 	} elseif(isset($_GET['login'])) {
 		if($_POST['submit']) {
 			$errors = $error->check_login($_POST['data']['username'],$_POST['data']['password']);
