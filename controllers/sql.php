@@ -1,7 +1,12 @@
 <?php
-	mysql_connect("127.0.01", "root", "") or die(mysql_error());
-	mysql_select_db("itd") or die(mysql_error());
-
+	if($_SERVER['HTTP_HOST'] != "localhost") {
+		mysql_connect("mysql50-07.wc2.dfw1.stabletransit.com", "425325_itd", "Master198") or die(mysql_error());
+		mysql_select_db("425325_itd") or die(mysql_error());
+	} else {
+		mysql_connect("127.0.01", "root", "") or die(mysql_error());
+		mysql_select_db("itd") or die(mysql_error());
+	}
+	
 	class Sql {
 		function select($fields,$table,$where='',$key) {
 			$sql = "select ".$fields." from ".$table.$where;
