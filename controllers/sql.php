@@ -5,7 +5,6 @@
 	class Sql {
 		function select($fields,$table,$where='',$key) {
 			$sql = "select ".$fields." from ".$table.$where;
-			//echo $sql;
 			$result = mysql_query($sql) or die(sql::error(mysql_error()));
 			if(mysql_num_rows($result) > 0) {
 				while($row = mysql_fetch_object($result)) {

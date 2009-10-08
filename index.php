@@ -1,7 +1,10 @@
 <?php
 	session_start('itd');
 	//date_default_timezone_set('Israel');
-	include('common.php');	
+	include('common.php');
+	if(isset($_COOKIE['itd_id'])) {
+		$me = $user->my_info($_COOKIE['itd_user'],$_COOKIE['itd_id']);
+	}		
 	if(isset($_GET['search'])) {
 		if(strtolower($_POST['adbc']) == "bc") { $neg = '-'; }
 		if($_POST['hour'] <= 11 && strtolower($_POST['ampm']) == "pm") { $_POST['hour']+=12; }
@@ -43,18 +46,39 @@
 		include($include_root.'templates/cart.php');
 	} elseif(isset($_GET['checkout'])) {
 		include($include_root.'templates/checkout.php');
-	} elseif(isset($_GET['account'])) {
+	} elseif(isset($_GET['register'])) {
 		if($_POST['submit']) {
 			$errors = $error->account($_POST['data']);
 			if(count($errors) > 0) {
 				$message = implode('<br />',$errors);
-				include($include_root.'templates/account.php');
+				include($include_root.'templates/register.php');
 			} else {
-				echo 'create';
+				$user_id = $user->create($_POST['data']);
+				$user->login($_POST['data']);
+				$me = $user->my_info($_POST['data']['username'],$user_id);
+				header('Location: '.$web_root.'?account');
 			}
 		} else {
-			include($include_root.'templates/account.php');
+			include($include_root.'templates/register.php');
 		}
+	} elseif(isset($_GET['account'])) {
+		include($include_root.'templates/account.php');
+	} elseif(isset($_GET['login'])) {
+		if($_POST['submit']) {
+			$errors = $error->check_login($_POST['data']['username'],$_POST['data']['password']);
+			if(count($errors) > 0) {	
+				$message = "Your username or password is invalid";
+				include($include_root.'templates/login.php');
+			} else {
+				$user->login($_POST['data']);
+				header('Location: '.$web_root.'?account');
+			}
+		} else {
+			include($include_root.'templates/login.php');
+		}
+	} elseif(isset($_GET['logout'])) {
+		$user->logout();
+		header('Location: index.php');
 	} else {
 		include($include_root.'templates/home.php');
 	}

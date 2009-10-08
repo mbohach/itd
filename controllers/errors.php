@@ -12,6 +12,14 @@
 			return $errors;
 		}
 		
+		function check_login($username,$password) {
+			$user = sql::select("*","users", " where username = '".$username."' and password = '".mysql_real_escape_string(md5($password))."'","id");
+			if($user == "") {
+				$errors['other'] = "Invalid login information.  Please try again.";
+			} 
+			return $errors;
+		}
+		
 		function check_email($email) {
 			$user = sql::select("*","users"," where email = '".mysql_real_escape_string($email)."'","id");
 			if(count($user) > 0) {

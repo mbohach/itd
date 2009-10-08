@@ -32,7 +32,7 @@
 			<div class="padding">
 				<div id="top_nav">
 					<ul>
-						<li><a href="<?= $web_root ?>?account">Create New</li>
+						<li><a href="<?= $web_root ?>?register">Create New</li>
 						<li><a href="#">My Account</a></li>
 						<li><a href="#">Most Recent</a></li>
 						<li><a href="#">Demo</a></li>

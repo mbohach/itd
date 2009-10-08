@@ -324,3 +324,14 @@ h3 {
 	font-weight: bold;
 	font-style: italic;
 }
+
+.message {
+	background-color: #4182e1;
+	border: 1px solid #1a437f;
+	padding: 10px;
+	color: #FFF;
+	margin: 5px 0;
+	line-height: 18px;
+	font-weight: bold;
+	font-style: italic;
+}
